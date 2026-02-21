@@ -43,69 +43,83 @@
     </div>
 
     <script>
-        // ==================== TESTE MÍNIMO DO CANVAS ====================
-        console.log('🚀 Script iniciado');
+        // ==================== MAPA FUNCIONAL ====================
+        console.log('🚀 Iniciando mapa');
         
-        // Tenta encontrar o canvas
         const canvas = document.getElementById('mapaCanvas');
-        
         if (!canvas) {
-            console.error('❌ Canvas não encontrado!');
-            document.body.innerHTML += '<h2 style="color:red; text-align:center">ERRO: Canvas não encontrado!</h2>';
+            document.body.innerHTML += '<h2 style="color:red">❌ Canvas não encontrado!</h2>';
         } else {
-            console.log('✅ Canvas encontrado!', canvas);
-            
-            // Pega o contexto 2D
             const ctx = canvas.getContext('2d');
             
-            if (!ctx) {
-                console.error('❌ Não foi possível obter o contexto 2D');
-                document.body.innerHTML += '<h2 style="color:red; text-align:center">ERRO: Contexto 2D não disponível!</h2>';
-            } else {
-                console.log('✅ Contexto 2D obtido');
-                
-                // 1. LIMPA O CANVAS
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                // 2. FUNDO AZUL
-                ctx.fillStyle = '#3498db';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                console.log('✅ Fundo azul desenhado');
-                
-                // 3. CÍRCULO VERMELHO
-                ctx.fillStyle = '#e74c3c';
+            // Lista completa dos estados
+            const estados = [
+                { sigla: 'AC', cor: '#2E7D32', x: 200, y: 380 },
+                { sigla: 'AM', cor: '#2E7D32', x: 280, y: 270 },
+                { sigla: 'PA', cor: '#2E7D32', x: 440, y: 210 },
+                { sigla: 'RO', cor: '#2E7D32', x: 240, y: 330 },
+                { sigla: 'RR', cor: '#2E7D32', x: 330, y: 180 },
+                { sigla: 'TO', cor: '#2E7D32', x: 390, y: 310 },
+                { sigla: 'AP', cor: '#2E7D32', x: 500, y: 140 },
+                { sigla: 'MA', cor: '#F57C00', x: 460, y: 270 },
+                { sigla: 'PI', cor: '#F57C00', x: 440, y: 340 },
+                { sigla: 'CE', cor: '#F57C00', x: 540, y: 240 },
+                { sigla: 'RN', cor: '#F57C00', x: 590, y: 270 },
+                { sigla: 'PB', cor: '#F57C00', x: 590, y: 310 },
+                { sigla: 'PE', cor: '#F57C00', x: 560, y: 350 },
+                { sigla: 'AL', cor: '#F57C00', x: 570, y: 380 },
+                { sigla: 'SE', cor: '#F57C00', x: 540, y: 400 },
+                { sigla: 'BA', cor: '#F57C00', x: 480, y: 430 },
+                { sigla: 'MT', cor: '#FDD835', x: 320, y: 400 },
+                { sigla: 'MS', cor: '#FDD835', x: 330, y: 490 },
+                { sigla: 'GO', cor: '#FDD835', x: 390, y: 420 },
+                { sigla: 'DF', cor: '#FDD835', x: 380, y: 380 },
+                { sigla: 'MG', cor: '#1976D2', x: 430, y: 480 },
+                { sigla: 'ES', cor: '#1976D2', x: 500, y: 470 },
+                { sigla: 'RJ', cor: '#1976D2', x: 480, y: 530 },
+                { sigla: 'SP', cor: '#1976D2', x: 400, y: 540 },
+                { sigla: 'PR', cor: '#C2185B', x: 380, y: 590 },
+                { sigla: 'SC', cor: '#C2185B', x: 420, y: 630 },
+                { sigla: 'RS', cor: '#C2185B', x: 350, y: 670 }
+            ];
+            
+            // Limpa e prepara o canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Fundo do mapa
+            ctx.fillStyle = '#b3e0ff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Desenha cada estado
+            estados.forEach(estado => {
+                // Círculo colorido
+                ctx.fillStyle = estado.cor;
                 ctx.beginPath();
-                ctx.arc(450, 350, 120, 0, Math.PI * 2);
+                ctx.arc(estado.x, estado.y, 20, 0, Math.PI * 2);
                 ctx.fill();
-                console.log('✅ Círculo vermelho desenhado');
                 
-                // 4. BORDA BRANCA NO CÍRCULO
+                // Borda branca
                 ctx.strokeStyle = 'white';
-                ctx.lineWidth = 5;
-                ctx.beginPath();
-                ctx.arc(450, 350, 120, 0, Math.PI * 2);
+                ctx.lineWidth = 2;
                 ctx.stroke();
                 
-                // 5. TEXTO
+                // Sigla
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 40px Arial';
+                ctx.font = 'bold 12px Arial';
                 ctx.shadowColor = 'black';
-                ctx.shadowBlur = 10;
-                ctx.shadowOffsetX = 3;
-                ctx.shadowOffsetY = 3;
-                ctx.fillText('TESTE', 350, 340);
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-                
-                console.log('✅ Tudo desenhado com sucesso!');
-                
-                // Mostra um alerta de confirmação
-                alert('✅ TESTE: Canvas funcionando!');
-            }
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+                ctx.fillText(estado.sigla, estado.x - 10, estado.y + 4);
+            });
+            
+            // Reseta sombra
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            
+            console.log('✅ Mapa desenhado com sucesso!');
         }
-        
-        console.log('🏁 Script finalizado');
     </script>
 </body>
 </html>
