@@ -36,32 +36,55 @@ const estados = [
 
 // Função para desenhar o mapa
 function desenharMapa() {
+    // Limpa o canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    // Desenha o fundo
+    ctx.fillStyle = '#a4d3ee';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Desenha cada estado
     estados.forEach(estado => {
-        // Desenha a imagem do estado (se existir)
+        // Tenta carregar a imagem
         const img = new Image();
         img.src = estado.img;
+        
         img.onload = () => {
-            ctx.drawImage(img, estado.x-30, estado.y-30, 60, 60);
+            // Se a imagem carregar, desenha ela
+            ctx.drawImage(img, estado.x-25, estado.y-25, 50, 50);
         };
-        // Fallback: se a imagem não carregar, desenha círculo
+        
         img.onerror = () => {
+            // Se a imagem não carregar, desenha um círculo colorido
             ctx.fillStyle = estado.cor;
             ctx.beginPath();
-            ctx.arc(estado.x, estado.y, 30, 0, Math.PI*2);
+            ctx.arc(estado.x, estado.y, 25, 0, Math.PI*2);
             ctx.fill();
+            
+            // Borda branca
             ctx.strokeStyle = 'white';
             ctx.lineWidth = 3;
             ctx.stroke();
+            
+            // Nome do estado
             ctx.fillStyle = 'white';
-            ctx.font = 'bold 16px Arial';
-            ctx.fillText(estado.sigla, estado.x-10, estado.y+5);
+            ctx.font = 'bold 14px Arial';
+            ctx.shadowColor = 'black';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetX = 1;
+            ctx.shadowOffsetY = 1;
+            ctx.fillText(estado.sigla, estado.x-12, estado.y+5);
+            
+            // Reset da sombra
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
         };
     });
 }
 
-// Carregar imagens e desenhar
+// Inicializa o mapa quando a página carregar
 window.onload = function() {
+    console.log('Página carregada, desenhando mapa...');
     desenharMapa();
 };
