@@ -10,7 +10,7 @@
         .jogo-container { position: relative; width: 100%; max-width: 1000px; background: #2C3E50; border-radius: 50px; padding: 20px; box-shadow: 0 20px 0 #1a252f; border: 5px solid #FFD700; }
         .mapa-titulo { text-align: center; color: white; font-size: 28px; margin-bottom: 15px; text-shadow: 3px 3px 0 #1a252f; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .canvas-wrapper { position: relative; width: 100%; background: #b3e0ff; border-radius: 30px; padding: 10px; border: 5px solid #FFD700; }
-        #mapaCanvas { width: 100%; height: auto; display: block; border-radius: 20px; cursor: pointer; background: #a4d3ee; }
+        #mapaCanvas { width: 100%; height: auto; display: block; border-radius: 20px; cursor: pointer; background: #a4d3ee; min-height: 400px; }
         #tooltip { position: absolute; background: rgba(0,0,0,0.9); color: white; padding: 12px 24px; border-radius: 50px; font-size: 18px; pointer-events: none; display: none; z-index: 2000; border: 3px solid #FFD700; white-space: nowrap; }
         .legenda { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 60px; }
         .legenda-item { display: flex; align-items: center; gap: 10px; color: white; font-weight: bold; font-size: 16px; padding: 5px 15px; background: rgba(0,0,0,0.3); border-radius: 40px; }
@@ -43,66 +43,69 @@
     </div>
 
     <script>
-        // ==================== MAPA COM CÍRCULOS (FUNCIONA 100%) ====================
+        // ==================== TESTE MÍNIMO DO CANVAS ====================
+        console.log('🚀 Script iniciado');
+        
+        // Tenta encontrar o canvas
         const canvas = document.getElementById('mapaCanvas');
-        const ctx = canvas.getContext('2d');
-        const tooltip = document.getElementById('tooltip');
-
-        // Estados APENAS com coordenadas e cores (SEM IMAGENS)
-        const estados = [
-            { nome: 'AC', sigla: 'AC', regiao: 'Norte', cor: '#2E7D32', x: 200, y: 380 },
-            { nome: 'AM', sigla: 'AM', regiao: 'Norte', cor: '#2E7D32', x: 280, y: 270 },
-            { nome: 'PA', sigla: 'PA', regiao: 'Norte', cor: '#2E7D32', x: 440, y: 210 },
-            { nome: 'MG', sigla: 'MG', regiao: 'Sudeste', cor: '#1976D2', x: 430, y: 480 }
-        ];
-
-        function desenharMapa() {
-            // Limpa o canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        if (!canvas) {
+            console.error('❌ Canvas não encontrado!');
+            document.body.innerHTML += '<h2 style="color:red; text-align:center">ERRO: Canvas não encontrado!</h2>';
+        } else {
+            console.log('✅ Canvas encontrado!', canvas);
             
-            // Fundo do mapa
-            ctx.fillStyle = '#b3e0ff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Pega o contexto 2D
+            const ctx = canvas.getContext('2d');
             
-            // Desenha cada estado como círculo
-            estados.forEach(estado => {
-                // Círculo colorido
-                ctx.fillStyle = estado.cor;
-                ctx.beginPath();
-                ctx.arc(estado.x, estado.y, 22, 0, Math.PI * 2);
-                ctx.fill();
+            if (!ctx) {
+                console.error('❌ Não foi possível obter o contexto 2D');
+                document.body.innerHTML += '<h2 style="color:red; text-align:center">ERRO: Contexto 2D não disponível!</h2>';
+            } else {
+                console.log('✅ Contexto 2D obtido');
                 
-                // Borda branca
+                // 1. LIMPA O CANVAS
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 2. FUNDO AZUL
+                ctx.fillStyle = '#3498db';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                console.log('✅ Fundo azul desenhado');
+                
+                // 3. CÍRCULO VERMELHO
+                ctx.fillStyle = '#e74c3c';
+                ctx.beginPath();
+                ctx.arc(450, 350, 120, 0, Math.PI * 2);
+                ctx.fill();
+                console.log('✅ Círculo vermelho desenhado');
+                
+                // 4. BORDA BRANCA NO CÍRCULO
                 ctx.strokeStyle = 'white';
-                ctx.lineWidth = 3;
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.arc(450, 350, 120, 0, Math.PI * 2);
                 ctx.stroke();
                 
-                // Sigla do estado
+                // 5. TEXTO
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 14px Arial';
+                ctx.font = 'bold 40px Arial';
                 ctx.shadowColor = 'black';
-                ctx.shadowBlur = 4;
-                ctx.shadowOffsetX = 1;
-                ctx.shadowOffsetY = 1;
-                ctx.fillText(estado.sigla, estado.x - 12, estado.y + 5);
-                
-                // Reset sombra
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetX = 3;
+                ctx.shadowOffsetY = 3;
+                ctx.fillText('TESTE', 350, 340);
                 ctx.shadowBlur = 0;
                 ctx.shadowOffsetX = 0;
                 ctx.shadowOffsetY = 0;
-            });
-            
-            console.log('✅ Mapa desenhado com sucesso!');
+                
+                console.log('✅ Tudo desenhado com sucesso!');
+                
+                // Mostra um alerta de confirmação
+                alert('✅ TESTE: Canvas funcionando!');
+            }
         }
-
-        // Inicializa quando a página carregar
-        window.onload = function() {
-            desenharMapa();
-        };
+        
+        console.log('🏁 Script finalizado');
     </script>
-    <script>
-    alert('ALERTA: JavaScript está rodando!');
-    console.log('Log no console');
-</script>
 </body>
 </html>
