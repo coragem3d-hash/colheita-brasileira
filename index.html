@@ -43,41 +43,59 @@
     </div>
 
     <script>
+        // ==================== MAPA COM CÍRCULOS (FUNCIONA 100%) ====================
         const canvas = document.getElementById('mapaCanvas');
         const ctx = canvas.getContext('2d');
         const tooltip = document.getElementById('tooltip');
 
+        // Estados APENAS com coordenadas e cores (SEM IMAGENS)
         const estados = [
-            { nome: 'AC', sigla: 'AC', regiao: 'Norte', cor: '#2E7D32', x: 200, y: 380, img: 'imagens/mapa/ac.png' },
-            { nome: 'AM', sigla: 'AM', regiao: 'Norte', cor: '#2E7D32', x: 280, y: 270, img: 'imagens/mapa/am.png' },
-            { nome: 'PA', sigla: 'PA', regiao: 'Norte', cor: '#2E7D32', x: 440, y: 210, img: 'imagens/mapa/pa.png' },
-            { nome: 'MG', sigla: 'MG', regiao: 'Sudeste', cor: '#1976D2', x: 430, y: 480, img: 'imagens/mapa/mg.png' }
+            { nome: 'AC', sigla: 'AC', regiao: 'Norte', cor: '#2E7D32', x: 200, y: 380 },
+            { nome: 'AM', sigla: 'AM', regiao: 'Norte', cor: '#2E7D32', x: 280, y: 270 },
+            { nome: 'PA', sigla: 'PA', regiao: 'Norte', cor: '#2E7D32', x: 440, y: 210 },
+            { nome: 'MG', sigla: 'MG', regiao: 'Sudeste', cor: '#1976D2', x: 430, y: 480 }
         ];
 
         function desenharMapa() {
+            // Limpa o canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
+            // Fundo do mapa
+            ctx.fillStyle = '#b3e0ff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Desenha cada estado como círculo
             estados.forEach(estado => {
-                const img = new Image();
-                img.src = estado.img;
-                img.onload = () => {
-                    ctx.drawImage(img, estado.x-30, estado.y-30, 60, 60);
-                };
-                img.onerror = () => {
-                    ctx.fillStyle = estado.cor;
-                    ctx.beginPath();
-                    ctx.arc(estado.x, estado.y, 30, 0, Math.PI*2);
-                    ctx.fill();
-                    ctx.strokeStyle = 'white';
-                    ctx.lineWidth = 3;
-                    ctx.stroke();
-                    ctx.fillStyle = 'white';
-                    ctx.font = 'bold 16px Arial';
-                    ctx.fillText(estado.sigla, estado.x-10, estado.y+5);
-                };
+                // Círculo colorido
+                ctx.fillStyle = estado.cor;
+                ctx.beginPath();
+                ctx.arc(estado.x, estado.y, 22, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Borda branca
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // Sigla do estado
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px Arial';
+                ctx.shadowColor = 'black';
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+                ctx.fillText(estado.sigla, estado.x - 12, estado.y + 5);
+                
+                // Reset sombra
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
             });
+            
+            console.log('✅ Mapa desenhado com sucesso!');
         }
 
+        // Inicializa quando a página carregar
         window.onload = function() {
             desenharMapa();
         };
