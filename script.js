@@ -1,5 +1,5 @@
-// ==================== MAPA COM ESPAÇAMENTO CORRIGIDO ====================
-console.log('🚀 Reorganizando Centro-Oeste e Nordeste');
+// ==================== MAPA COM AJUSTES FINOS ====================
+console.log('🚀 Ajustando posições e aumentando imagens');
 
 const canvas = document.getElementById('mapaCanvas');
 if (!canvas) {
@@ -8,33 +8,39 @@ if (!canvas) {
     const ctx = canvas.getContext('2d');
     const tooltip = document.getElementById('tooltip');
     
-    const TAMANHO_PADRAO = 70;
+    // TAMANHO AUMENTADO (90x90)
+    const TAMANHO_PADRAO = 90;
     
-    // Coordenadas REORGANIZADAS com mais espaço
     const estados = [
-        // NORTE (verde) - mantido
+        // NORTE (verde)
         { sigla: 'AC', nome: 'Acre', regiao: 'Norte', cor: '#2E7D32', x: 220, y: 540 },
         { sigla: 'AM', nome: 'Amazonas', regiao: 'Norte', cor: '#2E7D32', x: 320, y: 430 },
-        { sigla: 'PA', nome: 'Pará', regiao: 'Norte', cor: '#2E7D32', x: 520, y: 330 },
-        { sigla: 'RO', nome: 'Rondônia', regiao: 'Norte', cor: '#2E7D32', x: 280, y: 490 },
-        { sigla: 'RR', nome: 'Roraima', regiao: 'Norte', cor: '#2E7D32', x: 380, y: 270 },
-        { sigla: 'TO', nome: 'Tocantins', regiao: 'Norte', cor: '#2E7D32', x: 480, y: 430 },
-        { sigla: 'AP', nome: 'Amapá', regiao: 'Norte', cor: '#2E7D32', x: 620, y: 240 },
+        { sigla: 'PA', nome: 'Pará', regiao: 'Norte', cor: '#2E7D32', x: 520, y: 330 }, // ↙️ desceu um pouco
         
-        // NORDESTE (laranja) - REORGANIZADO em 2 linhas
+        // RO e RR ajustados
+        { sigla: 'RO', nome: 'Rondônia', regiao: 'Norte', cor: '#2E7D32', x: 280, y: 490 },
+        { sigla: 'RR', nome: 'Roraima', regiao: 'Norte', cor: '#2E7D32', x: 380, y: 300 }, // ⬇️ DESCIDO (antes 270)
+        
+        { sigla: 'TO', nome: 'Tocantins', regiao: 'Norte', cor: '#2E7D32', x: 470, y: 420 }, // ⬅️ afastado do PA
+        { sigla: 'AP', nome: 'Amapá', regiao: 'Norte', cor: '#2E7D32', x: 620, y: 270 }, // ⬇️ DESCIDO (antes 240)
+        
+        // NORDESTE (laranja)
         { sigla: 'MA', nome: 'Maranhão', regiao: 'Nordeste', cor: '#F57C00', x: 550, y: 360 },
         { sigla: 'PI', nome: 'Piauí', regiao: 'Nordeste', cor: '#F57C00', x: 530, y: 440 },
         { sigla: 'CE', nome: 'Ceará', regiao: 'Nordeste', cor: '#F57C00', x: 660, y: 340 },
         { sigla: 'RN', nome: 'Rio Grande do Norte', regiao: 'Nordeste', cor: '#F57C00', x: 730, y: 370 },
         { sigla: 'PB', nome: 'Paraíba', regiao: 'Nordeste', cor: '#F57C00', x: 730, y: 420 },
-        { sigla: 'PE', nome: 'Pernambuco', regiao: 'Nordeste', cor: '#F57C00', x: 690, y: 460 },
-        { sigla: 'AL', nome: 'Alagoas', regiao: 'Nordeste', cor: '#F57C00', x: 700, y: 500 },
-        { sigla: 'SE', nome: 'Sergipe', regiao: 'Nordeste', cor: '#F57C00', x: 660, y: 540 },
-        { sigla: 'BA', nome: 'Bahia', regiao: 'Nordeste', cor: '#F57C00', x: 590, y: 560 },
         
-        // CENTRO-OESTE (amarelo) - REORGANIZADO com +30px entre eles
+        // PE e AL SEPARADOS
+        { sigla: 'PE', nome: 'Pernambuco', regiao: 'Nordeste', cor: '#F57C00', x: 690, y: 460 },
+        { sigla: 'AL', nome: 'Alagoas', regiao: 'Nordeste', cor: '#F57C00', x: 710, y: 500 }, // ➡️ afastado de PE
+        
+        { sigla: 'SE', nome: 'Sergipe', regiao: 'Nordeste', cor: '#F57C00', x: 670, y: 540 },
+        { sigla: 'BA', nome: 'Bahia', regiao: 'Nordeste', cor: '#F57C00', x: 600, y: 560 },
+        
+        // CENTRO-OESTE (amarelo) - MS SUBIU
         { sigla: 'MT', nome: 'Mato Grosso', regiao: 'Centro-Oeste', cor: '#FDD835', x: 380, y: 480 },
-        { sigla: 'MS', nome: 'Mato Grosso do Sul', regiao: 'Centro-Oeste', cor: '#FDD835', x: 350, y: 610 }, // +30px y
+        { sigla: 'MS', nome: 'Mato Grosso do Sul', regiao: 'Centro-Oeste', cor: '#FDD835', x: 360, y: 590 }, // ⬆️ SUBIU (antes 610)
         { sigla: 'GO', nome: 'Goiás', regiao: 'Centro-Oeste', cor: '#FDD835', x: 470, y: 540 },
         { sigla: 'DF', nome: 'Distrito Federal', regiao: 'Centro-Oeste', cor: '#FDD835', x: 460, y: 490 },
         
@@ -62,11 +68,12 @@ if (!canvas) {
             img.src = `imagens/mapa/${estado.sigla.toLowerCase()}.png`;
             
             img.onload = () => {
+                // Imagens MAIORES (90x90)
                 ctx.drawImage(img, estado.x - TAMANHO_PADRAO/2, estado.y - TAMANHO_PADRAO/2, TAMANHO_PADRAO, TAMANHO_PADRAO);
             };
             
             img.onerror = () => {
-                // Fallback
+                // Fallback também maior
                 ctx.fillStyle = estado.cor;
                 ctx.shadowColor = 'rgba(0,0,0,0.3)';
                 ctx.shadowBlur = 8;
@@ -81,10 +88,10 @@ if (!canvas) {
                 ctx.stroke();
                 
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 16px Arial';
+                ctx.font = 'bold 18px Arial';
                 ctx.shadowColor = 'black';
                 ctx.shadowBlur = 4;
-                ctx.fillText(estado.sigla, estado.x-12, estado.y+6);
+                ctx.fillText(estado.sigla, estado.x-15, estado.y+7);
                 
                 ctx.shadowBlur = 0;
             };
