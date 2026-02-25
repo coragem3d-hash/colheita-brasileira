@@ -1,5 +1,5 @@
-// ==================== MAPA COM IMAGENS 60x60 ====================
-console.log('🚀 Iniciando mapa com imagens');
+// ==================== MAPA COM IMAGENS 80x80 ====================
+console.log('🚀 Iniciando mapa com imagens em tamanho GRANDE');
 
 const canvas = document.getElementById('mapaCanvas');
 if (!canvas) {
@@ -47,28 +47,28 @@ if (!canvas) {
             img.src = estado.img;
             
             img.onload = () => {
-                // Imagem 60x60 (MAIOR)
-                ctx.drawImage(img, estado.x-30, estado.y-30, 60, 60);
+                // Imagem 80x80 (TAMANHO ORIGINAL)
+                ctx.drawImage(img, estado.x-40, estado.y-40, 80, 80);
             };
             
             img.onerror = () => {
-                // Fallback: círculo colorido
+                // Fallback: círculo colorido (também maior)
                 ctx.fillStyle = estado.cor;
                 ctx.beginPath();
-                ctx.arc(estado.x, estado.y, 22, 0, Math.PI * 2);
+                ctx.arc(estado.x, estado.y, 25, 0, Math.PI * 2);
                 ctx.fill();
                 
                 ctx.strokeStyle = 'white';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 3;
                 ctx.stroke();
                 
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 13px Arial';
+                ctx.font = 'bold 14px Arial';
                 ctx.shadowColor = 'black';
                 ctx.shadowBlur = 4;
                 ctx.shadowOffsetX = 1;
                 ctx.shadowOffsetY = 1;
-                ctx.fillText(estado.sigla, estado.x-10, estado.y+6);
+                ctx.fillText(estado.sigla, estado.x-12, estado.y+6);
                 
                 ctx.shadowBlur = 0;
                 ctx.shadowOffsetX = 0;
