@@ -48,7 +48,7 @@ if (!canvas) {
             
             img.onload = () => {
                 // Imagem 80x80 (TAMANHO ORIGINAL)
-                ctx.drawImage(img, estado.x-40, estado.y-40, 80, 80);
+                ctx.drawImage(img, estado.x-70, estado.y-70, 100, 100);
             };
             
             img.onerror = () => {
