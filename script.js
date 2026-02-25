@@ -47,26 +47,31 @@ if (!canvas) {
             const img = new Image();
             img.src = estado.img;
             
+            // Tenta desenhar a imagem. Se falhar, desenha o círculo.
             img.onload = () => {
-                ctx.drawImage(img, estado.x-20, estado.y-20, 40, 40);
+                // Imagem carregada: desenha com tamanho 50x50
+                ctx.drawImage(img, estado.x-25, estado.y-25, 50, 50);
             };
             
             img.onerror = () => {
-                // Fallback: círculo colorido
+                // Fallback: desenha círculo colorido
                 ctx.fillStyle = estado.cor;
                 ctx.beginPath();
-                ctx.arc(estado.x, estado.y, 18, 0, Math.PI * 2);
+                ctx.arc(estado.x, estado.y, 20, 0, Math.PI * 2);
                 ctx.fill();
+                
                 ctx.strokeStyle = 'white';
                 ctx.lineWidth = 2;
                 ctx.stroke();
+                
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 10px Arial';
+                ctx.font = 'bold 12px Arial';
                 ctx.shadowColor = 'black';
                 ctx.shadowBlur = 4;
                 ctx.shadowOffsetX = 1;
                 ctx.shadowOffsetY = 1;
-                ctx.fillText(estado.sigla, estado.x-7, estado.y+4);
+                ctx.fillText(estado.sigla, estado.x-9, estado.y+5);
+                
                 ctx.shadowBlur = 0;
                 ctx.shadowOffsetX = 0;
                 ctx.shadowOffsetY = 0;
