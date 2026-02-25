@@ -7,10 +7,20 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #1a2a32; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Segoe UI', Arial, sans-serif; padding: 15px; }
-        .jogo-container { position: relative; width: 100%; max-width: 1000px; background: #2C3E50; border-radius: 50px; padding: 20px; box-shadow: 0 20px 0 #1a252f; border: 5px solid #FFD700; }
+        .jogo-container { position: relative; width: 100%; max-width: 1300px; background: #2C3E50; border-radius: 50px; padding: 20px; box-shadow: 0 20px 0 #1a252f; border: 5px solid #FFD700; }
         .mapa-titulo { text-align: center; color: white; font-size: 28px; margin-bottom: 15px; text-shadow: 3px 3px 0 #1a252f; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .canvas-wrapper { position: relative; width: 100%; background: #b3e0ff; border-radius: 30px; padding: 10px; border: 5px solid #FFD700; }
-        #mapaCanvas { width: 100%; height: auto; display: block; border-radius: 20px; cursor: pointer; background: #a4d3ee; min-height: 400px; }
+        .canvas-wrapper { position: relative; width: 100%; background: #b3e0ff; border-radius: 30px; padding: 10px; border: 5px solid #FFD700; overflow-x: auto; }
+        #mapaCanvas { 
+            width: 100%; 
+            height: auto; 
+            display: block; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            background: #a4d3ee; 
+            min-height: 400px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
         #tooltip { position: absolute; background: rgba(0,0,0,0.9); color: white; padding: 12px 24px; border-radius: 50px; font-size: 18px; pointer-events: none; display: none; z-index: 2000; border: 3px solid #FFD700; white-space: nowrap; }
         .legenda { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 60px; }
         .legenda-item { display: flex; align-items: center; gap: 10px; color: white; font-weight: bold; font-size: 16px; padding: 5px 15px; background: rgba(0,0,0,0.3); border-radius: 40px; }
@@ -24,7 +34,7 @@
         <h1 class="mapa-titulo"><span>🇧🇷</span>COLHEITA BRASILEIRA<span>🇧🇷</span></h1>
         
         <div class="canvas-wrapper">
-            <canvas id="mapaCanvas" width="900" height="700"></canvas>
+            <canvas id="mapaCanvas" width="1200" height="900"></canvas>
             <div id="tooltip"></div>
         </div>
         
@@ -42,87 +52,6 @@
         </div>
     </div>
 
-    <script>
-        // ==================== MAPA COM IMAGENS E FALLBACK ====================
-        console.log('🚀 Iniciando mapa com imagens');
-        
-        const canvas = document.getElementById('mapaCanvas');
-        if (!canvas) {
-            document.body.innerHTML += '<h2 style="color:red">❌ Canvas não encontrado!</h2>';
-        } else {
-            const ctx = canvas.getContext('2d');
-            
-            // Lista completa dos estados com campo 'img' (caminho da imagem)
-            const estados = [
-                { sigla: 'AC', cor: '#2E7D32', x: 200, y: 380, img: 'imagens/mapa/ac.png' },
-                { sigla: 'AM', cor: '#2E7D32', x: 280, y: 270, img: 'imagens/mapa/am.png' },
-                { sigla: 'PA', cor: '#2E7D32', x: 440, y: 210, img: 'imagens/mapa/pa.png' },
-                { sigla: 'RO', cor: '#2E7D32', x: 240, y: 330, img: 'imagens/mapa/ro.png' },
-                { sigla: 'RR', cor: '#2E7D32', x: 330, y: 180, img: 'imagens/mapa/rr.png' },
-                { sigla: 'TO', cor: '#2E7D32', x: 390, y: 310, img: 'imagens/mapa/to.png' },
-                { sigla: 'AP', cor: '#2E7D32', x: 500, y: 140, img: 'imagens/mapa/ap.png' },
-                { sigla: 'MA', cor: '#F57C00', x: 460, y: 270, img: 'imagens/mapa/ma.png' },
-                { sigla: 'PI', cor: '#F57C00', x: 440, y: 340, img: 'imagens/mapa/pi.png' },
-                { sigla: 'CE', cor: '#F57C00', x: 540, y: 240, img: 'imagens/mapa/ce.png' },
-                { sigla: 'RN', cor: '#F57C00', x: 590, y: 270, img: 'imagens/mapa/rn.png' },
-                { sigla: 'PB', cor: '#F57C00', x: 590, y: 310, img: 'imagens/mapa/pb.png' },
-                { sigla: 'PE', cor: '#F57C00', x: 560, y: 350, img: 'imagens/mapa/pe.png' },
-                { sigla: 'AL', cor: '#F57C00', x: 570, y: 380, img: 'imagens/mapa/al.png' },
-                { sigla: 'SE', cor: '#F57C00', x: 540, y: 400, img: 'imagens/mapa/se.png' },
-                { sigla: 'BA', cor: '#F57C00', x: 480, y: 430, img: 'imagens/mapa/ba.png' },
-                { sigla: 'MT', cor: '#FDD835', x: 320, y: 400, img: 'imagens/mapa/mt.png' },
-                { sigla: 'MS', cor: '#FDD835', x: 330, y: 490, img: 'imagens/mapa/ms.png' },
-                { sigla: 'GO', cor: '#FDD835', x: 390, y: 420, img: 'imagens/mapa/go.png' },
-                { sigla: 'DF', cor: '#FDD835', x: 380, y: 380, img: 'imagens/mapa/df.png' },
-                { sigla: 'MG', cor: '#1976D2', x: 430, y: 480, img: 'imagens/mapa/mg.png' },
-                { sigla: 'ES', cor: '#1976D2', x: 500, y: 470, img: 'imagens/mapa/es.png' },
-                { sigla: 'RJ', cor: '#1976D2', x: 480, y: 530, img: 'imagens/mapa/rj.png' },
-                { sigla: 'SP', cor: '#1976D2', x: 400, y: 540, img: 'imagens/mapa/sp.png' },
-                { sigla: 'PR', cor: '#C2185B', x: 380, y: 590, img: 'imagens/mapa/pr.png' },
-                { sigla: 'SC', cor: '#C2185B', x: 420, y: 630, img: 'imagens/mapa/sc.png' },
-                { sigla: 'RS', cor: '#C2185B', x: 350, y: 670, img: 'imagens/mapa/rs.png' }
-            ];
-            
-            // Função para desenhar o mapa
-            function desenharMapa() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#b3e0ff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                estados.forEach(estado => {
-                    const img = new Image();
-                    img.src = estado.img;
-                    
-                    // Tenta desenhar a imagem. Se falhar, desenha o círculo.
-                    img.onload = () => {
-                        ctx.drawImage(img, estado.x-20, estado.y-20, 40, 40);
-                    };
-                    
-                    img.onerror = () => {
-                        // Fallback: desenha círculo colorido
-                        ctx.fillStyle = estado.cor;
-                        ctx.beginPath();
-                        ctx.arc(estado.x, estado.y, 18, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.strokeStyle = 'white';
-                        ctx.lineWidth = 2;
-                        ctx.stroke();
-                        ctx.fillStyle = 'white';
-                        ctx.font = 'bold 10px Arial';
-                        ctx.shadowColor = 'black';
-                        ctx.shadowBlur = 4;
-                        ctx.shadowOffsetX = 1;
-                        ctx.shadowOffsetY = 1;
-                        ctx.fillText(estado.sigla, estado.x-7, estado.y+4);
-                        ctx.shadowBlur = 0;
-                        ctx.shadowOffsetX = 0;
-                        ctx.shadowOffsetY = 0;
-                    };
-                });
-            }
-            
-            desenharMapa();
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
