@@ -1,5 +1,5 @@
-// ==================== MAPA COM ESPAÇAMENTO CENTRALIZADO ====================
-console.log('🚀 Espaçamento radial a partir do centro');
+// ==================== MAPA COM ESPAÇAMENTO UNIFORME ====================
+console.log('🚀 Reorganizando com espaçamento uniforme');
 
 const canvas = document.getElementById('mapaCanvas');
 if (!canvas) {
@@ -8,10 +8,10 @@ if (!canvas) {
     const ctx = canvas.getContext('2d');
     const tooltip = document.getElementById('tooltip');
     
-    // TAMANHO DAS IMAGENS (100x100)
-    const TAMANHO_PADRAO = 100;
+    // Tamanho das imagens (um pouco menor para evitar colisão)
+    const TAMANHO_PADRAO = 90;
     
-    // Coordenadas base (que estavam boas)
+    // Coordenadas base (que estavam funcionando)
     const estadosBase = [
         // NORTE
         { sigla: 'AC', nome: 'Acre', regiao: 'Norte', cor: '#2E7D32', x: 220, y: 540 },
@@ -51,26 +51,38 @@ if (!canvas) {
         { sigla: 'RS', nome: 'Rio Grande do Sul', regiao: 'Sul', cor: '#C2185B', x: 450, y: 860 }
     ];
     
-    // Calcular o centro do mapa
+    // 1. Calcular o centro do mapa
     let somaX = 0, somaY = 0;
     estadosBase.forEach(e => { somaX += e.x; somaY += e.y; });
     const centroX = somaX / estadosBase.length;
     const centroY = somaY / estadosBase.length;
     
-    console.log(`Centro do mapa: (${centroX.toFixed(0)}, ${centroY.toFixed(0)})`);
+    // 2. Calcular a distância média dos estados ao centro
+    let somaDistancias = 0;
+    estadosBase.forEach(e => {
+        const dx = e.x - centroX;
+        const dy = e.y - centroY;
+        somaDistancias += Math.sqrt(dx*dx + dy*dy);
+    });
+    const distanciaMedia = somaDistancias / estadosBase.length;
     
-    // Fator de espaçamento (1.2 = 20% mais espaçado)
-    const FATOR = 1.25;
+    console.log(`Centro: (${centroX.toFixed(0)}, ${centroY.toFixed(0)})`);
+    console.log(`Distância média: ${distanciaMedia.toFixed(0)}px`);
     
-    // Aplicar espaçamento RADIAL a partir do centro
+    // 3. Fator de espaçamento (aumentar em 40%)
+    const FATOR_ESPACAMENTO = 1.4;
+    
+    // 4. Aplicar espaçamento proporcional à distância do centro
     const estados = estadosBase.map(estado => {
-        // Vetor do centro até o estado
         const dx = estado.x - centroX;
         const dy = estado.y - centroY;
         
-        // Aplicar fator ao vetor
-        const novoX = centroX + dx * FATOR;
-        const novoY = centroY + dy * FATOR;
+        // Estados mais longe do centro se movem mais
+        const distancia = Math.sqrt(dx*dx + dy*dy);
+        const fator = 1 + (distancia / distanciaMedia) * 0.3; // Ajuste fino
+        
+        const novoX = centroX + dx * FATOR_ESPACAMENTO * fator;
+        const novoY = centroY + dy * FATOR_ESPACAMENTO * fator;
         
         return {
             ...estado,
@@ -78,6 +90,42 @@ if (!canvas) {
             y: Math.round(novoY)
         };
     });
+    
+    // 5. Verificar distâncias mínimas e ajustar se necessário
+    function verificarColisoes() {
+        let ajustes = 0;
+        for (let i = 0; i < estados.length; i++) {
+            for (let j = i+1; j < estados.length; j++) {
+                const dx = estados[i].x - estados[j].x;
+                const dy = estados[i].y - estados[j].y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                
+                // Distância mínima recomendada: tamanho do sprite + margem
+                const DIST_MIN = TAMANHO_PADRAO + 20;
+                
+                if (dist < DIST_MIN) {
+                    // Afastar os dois
+                    const angulo = Math.atan2(dy, dx);
+                    const deslocamento = (DIST_MIN - dist) / 2;
+                    
+                    estados[i].x += Math.round(Math.cos(angulo) * deslocamento);
+                    estados[i].y += Math.round(Math.sin(angulo) * deslocamento);
+                    estados[j].x -= Math.round(Math.cos(angulo) * deslocamento);
+                    estados[j].y -= Math.round(Math.sin(angulo) * deslocamento);
+                    
+                    ajustes++;
+                }
+            }
+        }
+        if (ajustes > 0) {
+            console.log(`🔧 Ajustes manuais realizados: ${ajustes}`);
+        }
+    }
+    
+    // Executar verificação algumas vezes
+    for (let tentativa = 0; tentativa < 3; tentativa++) {
+        verificarColisoes();
+    }
     
     function desenharMapa() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -109,10 +157,10 @@ if (!canvas) {
                 ctx.stroke();
                 
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 18px Arial';
+                ctx.font = 'bold 16px Arial';
                 ctx.shadowColor = 'black';
                 ctx.shadowBlur = 4;
-                ctx.fillText(estado.sigla, estado.x-15, estado.y+7);
+                ctx.fillText(estado.sigla, estado.x-12, estado.y+6);
                 
                 ctx.shadowBlur = 0;
             };
