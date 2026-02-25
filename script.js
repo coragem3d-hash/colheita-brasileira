@@ -141,3 +141,4 @@ if (!canvas) {
     
     desenharMapa();
 }
+// versão 2.0
