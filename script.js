@@ -1,4 +1,4 @@
-// ==================== MAPA COM IMAGENS E FALLBACK ====================
+// ==================== MAPA COM IMAGENS 60x60 ====================
 console.log('🚀 Iniciando mapa com imagens');
 
 const canvas = document.getElementById('mapaCanvas');
@@ -7,7 +7,6 @@ if (!canvas) {
 } else {
     const ctx = canvas.getContext('2d');
     
-    // Lista completa dos estados com campo 'img' (caminho da imagem)
     const estados = [
         { sigla: 'AC', cor: '#2E7D32', x: 200, y: 380, img: 'imagens/mapa/ac.png' },
         { sigla: 'AM', cor: '#2E7D32', x: 280, y: 270, img: 'imagens/mapa/am.png' },
@@ -47,17 +46,16 @@ if (!canvas) {
             const img = new Image();
             img.src = estado.img;
             
-            // Tenta desenhar a imagem. Se falhar, desenha o círculo.
             img.onload = () => {
-                // Imagem carregada: desenha com tamanho 50x50
-                ctx.drawImage(img, estado.x-25, estado.y-25, 50, 50);
+                // Imagem 60x60 (MAIOR)
+                ctx.drawImage(img, estado.x-30, estado.y-30, 60, 60);
             };
             
             img.onerror = () => {
-                // Fallback: desenha círculo colorido
+                // Fallback: círculo colorido
                 ctx.fillStyle = estado.cor;
                 ctx.beginPath();
-                ctx.arc(estado.x, estado.y, 20, 0, Math.PI * 2);
+                ctx.arc(estado.x, estado.y, 22, 0, Math.PI * 2);
                 ctx.fill();
                 
                 ctx.strokeStyle = 'white';
@@ -65,12 +63,12 @@ if (!canvas) {
                 ctx.stroke();
                 
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 12px Arial';
+                ctx.font = 'bold 13px Arial';
                 ctx.shadowColor = 'black';
                 ctx.shadowBlur = 4;
                 ctx.shadowOffsetX = 1;
                 ctx.shadowOffsetY = 1;
-                ctx.fillText(estado.sigla, estado.x-9, estado.y+5);
+                ctx.fillText(estado.sigla, estado.x-10, estado.y+6);
                 
                 ctx.shadowBlur = 0;
                 ctx.shadowOffsetX = 0;
