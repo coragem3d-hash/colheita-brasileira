@@ -5,7 +5,7 @@ const tooltip = document.getElementById('tooltip');
 
 const TAMANHO_PADRAO = 90;
 
-// COORDENADAS ORIGINAIS (que funcionavam)
+// COORDENADAS ORIGINAIS - NÃO MEXER
 const estados = [
     // NORTE
     { sigla: 'AC', nome: 'Acre', regiao: 'Norte', cor: '#2E7D32', x: 272, y: 718 },
@@ -45,46 +45,46 @@ const estados = [
     { sigla: 'RS', nome: 'Rio Grande do Sul', regiao: 'Sul', cor: '#C2185B', x: 558, y: 1144 }
 ];
 
-// ==================== DIAGNÓSTICO E AJUSTE DO CANVAS ====================
-(function ajustarCanvas() {
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+// ==================== FUNÇÃO PRINCIPAL ====================
+function desenharMapa() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    estados.forEach(e => {
-        minX = Math.min(minX, e.x);
-        maxX = Math.max(maxX, e.x);
-        minY = Math.min(minY, e.y);
-        maxY = Math.max(maxY, e.y);
+    // FUNDO AZUL CLARO (mantém)
+    ctx.fillStyle = '#b3e0ff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    estados.forEach(estado => {
+        const img = new Image();
+        img.src = `imagens/mapa/${estado.sigla.toLowerCase()}.png`;
+        
+        img.onload = () => {
+            ctx.drawImage(img, estado.x - TAMANHO_PADRAO/2, estado.y - TAMANHO_PADRAO/2, TAMANHO_PADRAO, TAMANHO_PADRAO);
+        };
+        
+        img.onerror = () => {
+            ctx.fillStyle = estado.cor;
+            ctx.shadowColor = 'rgba(0,0,0,0.3)';
+            ctx.shadowBlur = 8;
+            ctx.shadowOffsetY = 3;
+            ctx.beginPath();
+            ctx.arc(estado.x, estado.y, TAMANHO_PADRAO/2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 16px Arial';
+            ctx.shadowColor = 'black';
+            ctx.shadowBlur = 4;
+            ctx.fillText(estado.sigla, estado.x-12, estado.y+6);
+            
+            ctx.shadowBlur = 0;
+        };
     });
-    
-    const larguraNecessaria = maxX - minX + TAMANHO_PADRAO * 2;
-    const alturaNecessaria = maxY - minY + TAMANHO_PADRAO * 2;
-    
-    console.log('📊 DIAGNÓSTICO DO MAPA:');
-    console.log(`Menor X: ${minX}, Maior X: ${maxX}`);
-    console.log(`Menor Y: ${minY}, Maior Y: ${maxY}`);
-    console.log(`Largura necessária: ${larguraNecessaria}px`);
-    console.log(`Altura necessária: ${alturaNecessaria}px`);
-    console.log(`Canvas atual: ${canvas.width}x${canvas.height}`);
-    
-    // Ajusta o canvas se necessário
-    if (canvas.width < larguraNecessaria || canvas.height < alturaNecessaria) {
-        canvas.width = Math.max(canvas.width, larguraNecessaria);
-        canvas.height = Math.max(canvas.height, alturaNecessaria);
-        console.log(`✅ Canvas redimensionado para: ${canvas.width}x${canvas.height}`);
-    }
-    
-    // Adiciona margem nas bordas
-    const margem = 50;
-    const deslocX = margem - minX;
-    const deslocY = margem - minY;
-    
-    estados.forEach(e => {
-        e.x += deslocX;
-        e.y += deslocY;
-    });
-    
-    console.log(`✅ Estados reposicionados com margem de ${margem}px`);
-})();
+}
 
 // ==================== HISTÓRIAS DOS ESTADOS ====================
 const historias = {
@@ -158,45 +158,7 @@ function mostrarBoasVindas() {
     }
 }
 
-// ==================== FUNÇÕES DO MAPA ====================
-function desenharMapa() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#b3e0ff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    estados.forEach(estado => {
-        const img = new Image();
-        img.src = `imagens/mapa/${estado.sigla.toLowerCase()}.png`;
-        
-        img.onload = () => {
-            ctx.drawImage(img, estado.x - TAMANHO_PADRAO/2, estado.y - TAMANHO_PADRAO/2, TAMANHO_PADRAO, TAMANHO_PADRAO);
-        };
-        
-        img.onerror = () => {
-            ctx.fillStyle = estado.cor;
-            ctx.shadowColor = 'rgba(0,0,0,0.3)';
-            ctx.shadowBlur = 8;
-            ctx.shadowOffsetY = 3;
-            ctx.beginPath();
-            ctx.arc(estado.x, estado.y, TAMANHO_PADRAO/2, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.shadowBlur = 0;
-            ctx.strokeStyle = 'white';
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 16px Arial';
-            ctx.shadowColor = 'black';
-            ctx.shadowBlur = 4;
-            ctx.fillText(estado.sigla, estado.x-12, estado.y+6);
-            
-            ctx.shadowBlur = 0;
-        };
-    });
-}
-
+// ==================== FUNÇÕES AUXILIARES ====================
 function getEstadoNaPosicao(mouseX, mouseY) {
     for (let i = 0; i < estados.length; i++) {
         const estado = estados[i];
