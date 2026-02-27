@@ -10,13 +10,12 @@
     <div class="jogo-container">
         <!-- TELA 1 - MAPA DO BRASIL -->
         <div id="tela-mapa" class="tela ativa">
-            <h1 class="mapa-titulo"><span>🇧🇷</span>COLHEITA BRASILEIRA<span>🇧🇷</span></h1>
+            <h1 class="mapa-titulo">🇧🇷 LENDAS DO MAPA 🇧🇷</h1>
             
-            <div class="canvas-wrapper">
-                <canvas id="mapaCanvas" width="1600" height="1300"></canvas>
-                <div id="tooltip"></div>
-            </div>
+            <!-- Canvas sem wrapper - mais livre -->
+            <canvas id="mapaCanvas" width="1600" height="1300"></canvas>
             
+            <!-- Legenda (agora sem rodapé extra) -->
             <div class="legenda">
                 <div class="legenda-item"><span class="legenda-cor" style="background: #2E7D32;"></span>Norte</div>
                 <div class="legenda-item"><span class="legenda-cor" style="background: #F57C00;"></span>Nordeste</div>
@@ -31,14 +30,14 @@
             <button class="botao botao-voltar" onclick="voltarParaMapa()">← Voltar ao mapa do Brasil</button>
             
             <div class="info-estado" id="info-estado">
-                <h2 id="nombre-estado" style="color: #2C3E50; margin-bottom: 10px;"></h2>
-                <p id="historia-estado" style="color: #555; margin-bottom: 10px;"></p>
-                <p id="fundacao-estado" style="color: #777;"></p>
-                <p id="curiosidade-estado" style="color: #777; margin-top: 10px;"></p>
+                <h2 id="nombre-estado"></h2>
+                <p id="historia-estado"></p>
+                <p id="fundacao-estado"></p>
+                <p id="curiosidade-estado"></p>
             </div>
             
             <div class="sitio">
-                <h3 style="color: white; text-align: center; margin-bottom: 20px;">🌱 Seu Sítio em <span id="sitio-estado"></span></h3>
+                <h3>🌱 Seu Sítio em <span id="sitio-estado"></span></h3>
                 
                 <div class="canteiros-grid">
                     <div class="canteiro"></div>
@@ -51,10 +50,6 @@
                     <div class="canteiro"></div>
                     <div class="canteiro"></div>
                 </div>
-                
-                <p style="color: white; text-align: center; margin-top: 20px;">
-                    👤 Seu personagem | 🏠 Sua casinha | 🌱 Plante e colha
-                </p>
             </div>
         </div>
     </div>
